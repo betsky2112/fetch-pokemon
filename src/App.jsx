@@ -5,6 +5,7 @@ import PokeItem from './components/PokeItem'
 const App = () => {
 	const [pokemonList, setPokemonList] = useState([])
 	const [selectedPokemonName, setSelectedPokemonName] = useState('')
+	const [pokemonDetail, setPokemonDetai] = useState()
 
 	useEffect(() => {})
 	fetch('https://pokeapi.co/api/v2/pokemon?limit=10').then((res) => {
@@ -12,6 +13,15 @@ const App = () => {
 			.then((data) => setPokemonList(data.results))
 			.catch((err) => console.log(err))
 	}, [])
+
+	useEffect(() => {
+		if (!selectedPokemonName) return
+		fetch(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`)
+			.then((res) => res.json())
+			.then((data) => setPokemonDetai(data))
+			.catch((err) => console.log(err))
+	}, [selectedPokemonName])
+
 	return (
 		<div style={styles.container}>
 			<h1>Pokemon API</h1>
@@ -19,7 +29,7 @@ const App = () => {
 				pokemonList={pokemonList}
 				setSelectedPokemonName={setSelectedPokemonName}
 			/>
-			<p>{selectedPokemonName}</p>
+			{pokemonDetail && <p>{pokemonDetail.name}</p>}
 		</div>
 	)
 }
