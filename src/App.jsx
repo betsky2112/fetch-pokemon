@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React, {useState, useEffect} from 'react'
 import PokeItem from './components/PokeItem'
+import PokeDetail from './components/PokeDetail'
 
 const App = () => {
 	const [pokemonList, setPokemonList] = useState([])
 	const [selectedPokemonName, setSelectedPokemonName] = useState('')
-	const [pokemonDetail, setPokemonDetai] = useState()
+	const [pokemonDetail, setPokemonDetail] = useState()
 
 	useEffect(() => {})
 	fetch('https://pokeapi.co/api/v2/pokemon?limit=10').then((res) => {
@@ -18,9 +19,14 @@ const App = () => {
 		if (!selectedPokemonName) return
 		fetch(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`)
 			.then((res) => res.json())
-			.then((data) => setPokemonDetai(data))
+			.then((data) => setPokemonDetail(data))
 			.catch((err) => console.log(err))
 	}, [selectedPokemonName])
+
+	const clear = () => {
+		setSelectedPokemonName('')
+		setPokemonDetail()
+	}
 
 	return (
 		<div style={styles.container}>
@@ -29,7 +35,18 @@ const App = () => {
 				pokemonList={pokemonList}
 				setSelectedPokemonName={setSelectedPokemonName}
 			/>
-			{pokemonDetail && <p>{pokemonDetail.name}</p>}
+			{pokemonDetail && (
+				<div>
+					<h2>Pokemon Detail</h2>
+					<PokeDetail pokemonDetail={pokemonDetail} />
+					<button
+						style={styles.button}
+						onClick={() => clear()}
+					>
+						Clear
+					</button>
+				</div>
+			)}
 		</div>
 	)
 }
@@ -40,6 +57,15 @@ const styles = {
 		margin: '0 auto',
 		padding: '80px',
 		textAlign: 'center',
+	},
+	button: {
+		backgroundColor: '#1a1a1a',
+		color: '#fff',
+		borderRadius: '6px',
+		padding: '12px 24px',
+		fontSize: '1em',
+		cursor: 'pointer',
+		marginTop: '32px',
 	},
 }
 export default App
